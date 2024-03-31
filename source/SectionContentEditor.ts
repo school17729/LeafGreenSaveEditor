@@ -1,9 +1,9 @@
-import {SaveBlock} from "./SaveBlock";
-import {SectionContent} from "./SectionContent";
-import {Section} from "./Section";
-import {Extractor} from "./Extractor";
+import {SaveBlock} from "./SaveBlock.js";
+import {SectionContent} from "./SectionContent.js";
+import {Section} from "./Section.js";
+import {Editor} from "./Editor.js";
 
-class SectionContentExtractor extends Extractor {
+class SectionContentEditor extends Editor {
 
     private BLOCK_SIZE: number = 57344;
     private SECTION_SIZE: number = 4096;
@@ -92,4 +92,4 @@ class SectionContentExtractor extends Extractor {
     }
 }
 
-export { SectionContentExtractor };
+export { SectionContentEditor };

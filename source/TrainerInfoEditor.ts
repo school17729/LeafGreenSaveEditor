@@ -1,7 +1,7 @@
-import {Extractor} from "./Extractor";
-import {TrainerInfo} from "./TrainerInfo";
+import {Editor} from "./Editor.js";
+import {TrainerInfo} from "./TrainerInfo.js";
 
-class TrainerInfoExtractor extends Extractor {
+class TrainerInfoEditor extends Editor {
 
     private trainerInfoOffsets: Map<TrainerInfo, number> = new Map<TrainerInfo, number>([
         [TrainerInfo.PLAYER_NAME, 0],
@@ -56,4 +56,4 @@ class TrainerInfoExtractor extends Extractor {
     }
 }
 
-export {TrainerInfoExtractor};
+export {TrainerInfoEditor};

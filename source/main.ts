@@ -28,9 +28,10 @@ async function main(): Promise<void> {
     const checksumArray: number[] = sourceArray.slice(totalSectionOffset + checksumOffset, totalSectionOffset + checksumOffset + checksumSize);
     const checksumString: string = checksumArray.map<string>((element: number): string => element.toString()).join(", ");
 
-    const extractedChecksum: number[] = calculateChecksum(sourceArray.slice(totalSectionOffset, totalSectionOffset + 3884));
+    const calculatedChecksum: number[] = calculateChecksum(sourceArray.slice(totalSectionOffset, totalSectionOffset + 3884));
     
-    console.log("Extracted Checksum:", extractedChecksum);
+    console.log("Calculated Checksum:", calculatedChecksum);
+    console.log("Extracted Checksum:", checksumArray);
     console.log("Extracted Name:", nameString);
 
     const newSaveText: string = "";

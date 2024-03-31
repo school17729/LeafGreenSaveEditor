@@ -1,4 +1,4 @@
-abstract class Extractor {
+abstract class Editor {
     protected source: number[];
 
     protected constructor(source: number[]) {
@@ -16,4 +16,4 @@ abstract class Extractor {
     }
 }
 
-export { Extractor };
+export { Editor };
