@@ -1,5 +1,7 @@
 # LeafGreenSaveEditor
 ## Information
+**LeafGreenSaveEditor currently does not work.**\
+**There is currently no `resultText.txt` and `SaveWriter.js` is broken.**\
 View and edit save data in [Pokemon Leaf Green from the MKGBA emulator](https://mkgamesdev.github.io/MKGBA2.0/launcher.html#pokemongreen)
 ## Instructions
 - Install TypeScript and NodeJS
