@@ -1,0 +1,5 @@
+enum TrainerInfo {
+    PLAYER_NAME, PLAYER_GENDER, TRAINER_ID, TIME_PLAYED, OPTIONS, GAME_CODE, SECURITY_KEY
+}
+
+export {TrainerInfo};
