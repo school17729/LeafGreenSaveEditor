@@ -1,5 +1,7 @@
 const emulatorTarget = document.querySelector("#emulator_target");
+const tempMessage = document.querySelector("#tempMessage");
 emulatorTarget.style.display = "none";
+tempMessage.style.display = "none";
 document.body.style.cursor = "default";
 
 const saveStringDiv = document.createElement("div");
