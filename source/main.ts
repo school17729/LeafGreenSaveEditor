@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import { Character } from "./Character.js";
 import { Uint32 } from "./Uint/Uint32.js";
-import { UintEndianness } from "./Uint/UintEndianness.js";
 import { Uint16 } from "./Uint/Uint16.js";
 import { Uint8 } from "./Uint/Uint8.js";
 
@@ -91,23 +90,32 @@ function getEncodedStrFromNum(num: number): string {
 }
 
 function calculateChecksum(sectionMemory: number[]): number[] {
-    let sum: Uint32 = Uint32.fromDecimal(0);
+    let sum: Uint32 = new Uint32();
+    sum.fromDecimal(0);
 
     for (let i: number = 0; i < sectionMemory.length; i += 4) {
         let read: number[] = [];
-        for (let j: number = 0; j < 4; j++)
-            read = read.concat(Uint8.fromDecimal(sectionMemory[i + j]).littleEndian());
+        for (let j: number = 0; j < 4; j++) {
+            const readUint8: Uint8 = new Uint8();
+            readUint8.fromDecimal(sectionMemory[i + j]);
+            read = read.concat(readUint8.getMemory());
+        }
 
-        sum = sum.add(Uint32.fromBinary(read, UintEndianness.LITTLE));
+        const addAmount: Uint32 = new Uint32();
+        addAmount.fromBinary(read);
+        sum = sum.add(addAmount);
     }
+    const lower: Uint16 = new Uint16();
+    lower.fromBinary(sum.getMemory().slice(0, 16));
+    const higher: Uint16 = new Uint16();
+    higher.fromBinary(sum.getMemory().slice(16, 32));
 
-    const lower: Uint16 = Uint16.fromBinary(sum.littleEndian().slice(0, 16), UintEndianness.LITTLE);
-    const higher: Uint16 = Uint16.fromBinary(sum.littleEndian().slice(16, 32), UintEndianness.LITTLE);
-
-    const rawChecksum: number[] = lower.add(higher).littleEndian();
+    const rawChecksum: number[] = lower.add(higher).getMemory();
     const checksum: number[] = [];
     for (let i: number = 0; i < rawChecksum.length / 8; i++) {
-        const decimalByte: number = Uint8.fromBinary(rawChecksum.slice(i * 8, (i + 1) * 8), UintEndianness.LITTLE).decimal();
+        const decimalUint8: Uint8 = new Uint8();
+        decimalUint8.fromBinary(rawChecksum.slice(i * 8, (i + 1) * 8));
+        const decimalByte: number = decimalUint8.getDecimal();
         checksum.push(decimalByte);
     }
 

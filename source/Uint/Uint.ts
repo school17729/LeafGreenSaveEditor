@@ -1,72 +1,59 @@
-import {UintEndianness} from "./UintEndianness.js";
 import {Logic} from "./Logic.js";
 
 class Uint {
 
     public static SIZE: number;
     protected size: number;
-    protected endianness: UintEndianness;
     protected memory: number[];
 
-    protected constructor(size: number, memory: number[], endianness: UintEndianness) {
+    protected constructor(size: number) {
         this.size = size;
-        this.endianness = endianness;
+        this.memory = [];
+    }
+
+    public fromBinary(memory: number[]): void {
         this.memory = memory;
     }
 
-    protected static fromGenericDecimal(value: number): Uint {
+    public fromDecimal(value: number): void {
         let binaryString: string = value.toString(2);
         const stringMemory: string[] = binaryString.split("");
 
         const memory: number[] = stringMemory.map<number>((element: string): number => parseInt(element));
 
-        while (memory.length < this.SIZE * 8)
+        while (memory.length < this.size * 8)
             memory.unshift(0);
-        while (memory.length > this.SIZE * 8)
+        while (memory.length > this.size * 8)
             memory.shift();
 
-        return new Uint(this.SIZE, memory, UintEndianness.BIG);
+        this.memory = this.flipEndian(memory);
     }
 
-    public flipEndian(): number[] {
-        const mem: number[] = [];
+    protected flipEndian(memory: number[]): number[] {
+        const newMemory: number[] = [];
         for (let i: number = 0; i < this.size; i++) {
             for (let j: number = 0; j < 8; j++) {
                 // (this.SIZE * 8) is the size in bits
                 // - (8 * (i + 1)) is the negative offset in bits from the end of the memory array
                 // j is the positive offset in bits from the negative offset
 
-                mem.push(this.memory[(this.size * 8) - (8 * (i + 1)) + j]);
+                newMemory.push(memory[(this.size * 8) - (8 * (i + 1)) + j]);
             }
         }
-        return mem;
+        return newMemory;
     }
 
-    public littleEndian(): number[] {
-        if (this.endianness === UintEndianness.BIG)
-            return this.flipEndian();
-
-        return this.memory;
-    }
-
-    public bigEndian(): number[] {
-        if (this.endianness === UintEndianness.LITTLE)
-            return this.flipEndian();
-
-        return this.memory;
-    }
-
-    public decimal(): number {
-        const binaryString: string = this.bigEndian().join("");
+    public getDecimal(): number {
+        const binaryString: string = this.flipEndian(this.memory).join("");
         return parseInt(binaryString, 2);
     }
 
     public addGeneric(other: Uint): Uint {
-        const sum: number[] = new Array<number>(this.size * 8);
+        let sum: number[] = new Array<number>(this.size * 8);
         let carry: boolean = false;
 
-        const thisMemory: number[] = this.bigEndian();
-        const otherMemory: number[] = other.bigEndian();
+        const thisMemory: number[] = this.flipEndian(this.memory);
+        const otherMemory: number[] = other.flipEndian(other.getMemory());
 
         const thisBooleanMemory: boolean[] = thisMemory.map<boolean>((element: number): boolean => Boolean(element));
         const otherBooleanMemory: boolean[] = otherMemory.map<boolean>((element: number): boolean => Boolean(element));
@@ -84,15 +71,16 @@ class Uint {
             carry = node7;
         }
 
-        return new Uint(this.size, sum, UintEndianness.BIG);
+        sum = this.flipEndian(sum);
+
+        const newUint: Uint = new Uint(this.size);
+        newUint.fromBinary(sum);
+
+        return newUint;
     }
 
     public getMemory(): number[] {
         return this.memory;
-    }
-
-    public getEndianness(): UintEndianness {
-        return this.endianness;
     }
 }
 
